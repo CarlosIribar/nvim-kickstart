@@ -21,13 +21,35 @@ return {
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load { paths = '~/.config/nvim/lua/snippets' }
+            end,
+          },
         },
+        config = function()
+          local ls = require 'luasnip'
+
+          -- Key maps
+          vim.keymap.set({ 'i', 's' }, '<c-e>', function()
+            if ls.expand_or_jumpable() then
+              ls.expand_or_jump()
+            end
+          end, { silent = true })
+
+          vim.keymap.set({ 'i', 's' }, '<c-w>', function()
+            if ls.jumpable(-1) then
+              ls.jump(-1)
+            end
+          end, { silent = true })
+
+          vim.keymap.set('i', '<c-l>', function()
+            if ls.choice_active() then
+              ls.change_choice(1)
+            end
+          end)
+        end,
         opts = {},
       },
       'folke/lazydev.nvim',
@@ -57,7 +79,7 @@ return {
         -- <c-k>: Toggle signature help
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'default',
+        preset = 'enter',
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps

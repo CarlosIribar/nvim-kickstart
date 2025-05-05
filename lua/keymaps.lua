@@ -1,5 +1,8 @@
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+local mapper = function(mode, key, result, desc)
+  vim.keymap.set(mode, key, result, { noremap = true, silent = false, desc = desc })
+end
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -50,5 +53,46 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+-- telescope commands
+mapper('n', '<leader>fa', ':Telescope find_files<CR>')
+mapper('n', '<leader>ff', ':Telescope git_files<CR>')
+mapper('n', '<leader>fb', ':Telescope buffers<CR>')
+mapper('n', '<leader>fg', ':Telescope live_grep<CR>')
+mapper('n', '<leader>fh', ':Telescope help_tags<CR>')
+mapper('n', '<leader>fr', ':Telescope git_branches<CR>')
+mapper('n', '<leader>fe', ':Telescope git_status<CR>')
+mapper('n', '<leader>fs', ':Telescope luasnip<CR>')
+
+--
+mapper('n', '<leader>w', ':w<CR>', 'save')
+mapper('n', '<leader>q', ':q<CR>', 'quit')
+mapper('n', '<leader>p', '"*p', 'system paste')
+mapper('n', '<leader>y', '"*y', 'system copy')
+
+-- go to the previous buffer file
+mapper('n', '<leader>,', '<C-^>', 'Toogle between current and last buffer')
+
+-- NeoTree
+mapper('n', '<leader>pt', ':Neotree position=left toggle <CR>', 'system copy')
+
+-- Copilot chat
+mapper('n', '<leader>cc', ':CopilotChatToggle<CR>', 'Copilot chat')
+mapper('n', '<leader>cs', ':CopilotChatSave ', 'Copilot save')
+mapper('n', '<leader>cp', ':CopilotChatPrompts<CR>', 'Copilot prompts')
+mapper('n', '<leader>cm', ':CopilotChatModels<CR>', 'Copilot models')
+
+mapper('n', '<leader>n', ':set nu! <CR>', 'See line number')
+mapper('n', '<leader>rn', ':set rnu! <CR>', 'See relative line number')
+
+-- LSP keymaps
+mapper('n', 'gd', ':lua vim.lsp.buf.definition()<CR>', 'LSP go to definition')
+mapper('n', 'K', ':lua vim.lsp.buf.hover()<CR>', 'LSP hover info')
+
+-- Tmux navigation
+mapper('n', '<C-h>', ':TmuxNavigateLeft<CR>', 'Tmux window left')
+mapper('n', '<C-l>', ':TmuxNavigateRight<CR>', 'Tmux window right')
+mapper('n', '<C-j>', ':TmuxNavigateDown<CR>', 'Tmux window down')
+mapper('n', '<C-k>', ':TmuxNavigateUp<CR>', 'Tmux window up')
 
 -- vim: ts=2 sts=2 sw=2 et
