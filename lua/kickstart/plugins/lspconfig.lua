@@ -20,7 +20,7 @@ return {
       -- Mason must be loaded before its dependents so we need to set it up here.
       -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
       { 'williamboman/mason.nvim', opts = {} },
-      'williamboman/mason-lspconfig.nvim',
+      { 'williamboman/mason-lspconfig.nvim', opts = { automatic_enable = true } },
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
@@ -236,16 +236,49 @@ return {
             },
           },
         },
-        apex_ls = {
-          cmd = { 'java', '-jar', '/Users/carlosiribar/nvim/apex-jorje-lsp.jar', 'apex_language_server' },
+        harper_ls = {
+          filetypes = { 'apex', 'apexcode', 'markdown', 'comment', 'html', 'css', 'javascript', 'lua' },
+          settings = {
+            ['harper-ls'] = {},
+          },
+        },
+        ['apex_ls'] = {
+          -- cmd = { 'java', '-jar', '/Users/carlosiribar/nvim/apex-jorje-lsp.jar', 'apex_language_server' },
+          cmd = {
+            'java',
+            '-cp',
+            '/Users/carlosiribar/.local/share/nvim/mason/share/apex-language-server/apex-jorje-lsp.jar',
+            -- config.apex_jar_path,
+            '-Ddebug.internal.errors=true',
+            -- '-Ddebug.semantic.errors=' .. tostring(config.apex_enable_semantic_errors or false),
+            -- '-Ddebug.completion.statistics=' .. tostring(config.apex_enable_completion_statistics or false),
+            '-Dlwc.typegeneration.disabled=true',
+            '-Ddebug.internal.errors=true',
+            '-Ddebug.semantic.errors=true',
+            'apex.jorje.lsp.ApexLanguageServerLauncher',
+          },
+          -- on_new_config = function(config)
+          --   if not config.cmd and config.apex_jar_path then
+          --     config.cmd = {
+          --       vim.env.JAVA_HOME and (vim.env.JAVA_HOME .. '/bin/java') or 'java',
+          --       '-cp',
+          --     }
+          --     if config.apex_jvm_max_heap then
+          --       table.insert(config.cmd, '-Xmx' .. config.apex_jvm_max_heap)
+          --     end
+          --     table.insert(config.cmd, 'apex.jorje.lsp.ApexLanguageServerLauncher')
+          --   end
+          -- end,
           filetypes = { 'apex', 'cls', 'trigger', 'st', 'apexcode', 'js' },
-          apex_jar_path = '/Users/carlosiribar/nvim/apex-jorje-lsp.jar',
+          -- apex_jar_path = '/Users/carlosiribar/nvim/apex-jorje-lsp.jar',
+          apex_jar_path = '/Users/carlosiribar/.local/share/nvim/mason/share/apex-language-server/apex-jorje-lsp.jar',
           apex_enable_semantic_errors = true,
           root_dir = function(fname)
             return nvim_lsp.util.root_pattern('sfdx-project.json', '.git')(fname) or vim.fn.getcwd()
           end,
           settings = {
-            apex_jar_path = '/Users/carlosiribar/nvim/apex-jorje-lsp.jar',
+            -- apex_jar_path = '/Users/carlosiribar/nvim/apex-jorje-lsp.jar',
+            apex_jar_path = '/Users/carlosiribar/.local/share/nvim/mason/share/apex-language-server/apex-jorje-lsp.jar',
             apex_enable_semantic_errors = true,
             apex_enable_completion_statistics = false,
             apex_enable_code_actions = true,
@@ -270,44 +303,20 @@ return {
       --
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
-      local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
+      local ensure_installed = {
         'stylua', -- Used to format Lua code
-      })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
-      require('mason-lspconfig').setup {
-        ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-        automatic_installation = false,
-        handlers = {
-          function(server_name)
-            -- if server_name == 'apex_ls' then
-            --   return {
-            --     filetypes = { 'apex', 'cls', 'trigger', 'st', 'apexcode' },
-            --     settings = {
-            --       cmd = { 'java', '-jar', '/Users/carlosiribar/nvim/apex-jorje-lsp.jar' },
-            --       apex_jar_path = '/Users/carlosiribar/nvim/apex-jorje-lsp.jar',
-            --       apex_enable_semantic_errors = true,
-            --       apex_enable_completion_statistics = false,
-            --       apex_enable_code_actions = true,
-            --       apex_format_debug_level = 'info',
-            --       apex_completion_trigger_characters = { '.', ':', '<', '"', '=', '(' },
-            --       apex_completion_filter_camelcase = true,
-            --       apex_completion_filter_case_sensitive = false,
-            --       apex_completion_filter_case_insensitive = true,
-            --     },
-            --   }
-            -- end
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            -- Skip apex_ls configuration as it's handled separately
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
+        'lua-language-server',
+        'apex-language-server',
+        'harper-ls',
       }
+      -- vim.list_extend(ensure_installed, {
+      --   'stylua', -- Used to format Lua code
+      --   'apex-language-server',
+      -- })
+      for server_name, server in pairs(servers) do
+        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+        require('lspconfig')[server_name].setup(server)
+      end
     end,
   },
 }

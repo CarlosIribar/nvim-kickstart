@@ -88,7 +88,10 @@ return {
     vim.keymap.set('n', '<leader>sf', Sf.fetch_org_list, { desc = 'set local' })
     vim.keymap.set('n', '<leader>sS', Sf.set_global_target_org, { desc = 'set global' })
     vim.keymap.set('n', '<leader>ta', Sf.run_all_tests_in_this_file, { desc = 'run all test in file' })
+    vim.keymap.set('n', '<leader>tac', Sf.run_all_tests_in_this_file_with_coverage, { desc = 'run all test in file with coverage' })
     vim.keymap.set('n', '<leader>tc', Sf.run_current_test, { desc = 'run current test' })
+    vim.keymap.set('n', '<leader>tcc', Sf.run_current_test_with_coverage, { desc = 'run current test with coverage' })
+    vim.keymap.set('n', '<leader>sts', Sf.toggle_sign, { desc = 'toggle sign last test coverage' })
     vim.keymap.set('n', '<leader>to', Sf.open_test_select, { desc = 'open current test' })
     vim.keymap.set('n', '<leader>sra', Sf.run_anonymous, { desc = 'run anonymous' })
     vim.keymap.set('n', '<leader>srq', Sf.run_query, { desc = 'run query' })
@@ -98,6 +101,7 @@ return {
     vim.keymap.set('n', '<leader>scl', Sf.create_lwc_bundle, { desc = 'create lwc bundle' })
     vim.keymap.set('n', '<leader>sp', deploy_delta_force, { desc = 'salesforce push delta' })
     vim.keymap.set('n', '<leader>st', Sf.toggle_term, { desc = 'toogle term' })
+    vim.keymap.set('n', '<space><space>', Sf.toggle_term, { desc = 'toogle term' })
 
     Sf.get_target_org = Util.get
   end,

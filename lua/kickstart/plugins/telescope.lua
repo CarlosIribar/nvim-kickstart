@@ -66,8 +66,9 @@ return {
             '--with-filename',
             '--line-number',
             '--column',
-            '--smart-case', -- Ignorar mayúsculas/minúsculas automáticamente
+            '--ignore-case',
           },
+          find_command = { 'fd', '--type', 'f', '--strip-cwd-prefix', '--ignore-case' },
         },
         -- pickers = {}
         extensions = {

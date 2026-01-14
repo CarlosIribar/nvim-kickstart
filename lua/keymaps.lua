@@ -96,3 +96,5 @@ mapper('n', '<C-j>', ':TmuxNavigateDown<CR>', 'Tmux window down')
 mapper('n', '<C-k>', ':TmuxNavigateUp<CR>', 'Tmux window up')
 
 -- vim: ts=2 sts=2 sw=2 et
+vim.keymap.set('n', 'y', 'y', { noremap = true })
+vim.keymap.set('v', 'y', 'y', { noremap = true })

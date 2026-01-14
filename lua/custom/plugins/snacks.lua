@@ -62,7 +62,7 @@ return {
       function()
         Snacks.explorer()
       end,
-      desc = 'Lazygit',
+      desc = 'Explorer',
     },
   },
 }
